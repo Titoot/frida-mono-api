@@ -112,7 +112,7 @@ let MonoApi = {
   mono_class_inflate_generic_method_full: null,
   mono_class_inflate_generic_type: null,
   mono_class_init: null,
-  mono_class_instance_size: null,
+  mono_class_instance_size: ['int32', ['pointer']],
   mono_class_is_assignable_from: null,
   mono_class_is_blittable: null,
   mono_class_is_enum: ['uchar', ['pointer']],
