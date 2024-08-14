@@ -92,7 +92,8 @@ const MonoApiHelper = {
   TypeGetType: MonoApi.mono_type_get_type,
   TypeGetUnderlyingType: MonoApi.mono_type_get_underlying_type,
   ValueBox: (mono_class, valuePtr, domain = rootDomain) => MonoApi.mono_value_box(domain, mono_class, valuePtr),
-  Intercept: hookManagedMethod
+  Intercept: hookManagedMethod,
+  Replace: replaceManagedMethod
 }
 
 function hookManagedMethod(klass, methodName, callbacks) {
@@ -104,6 +105,16 @@ function hookManagedMethod(klass, methodName, callbacks) {
   let impl = MonoApi.mono_compile_method(md)
 
   Interceptor.attach(impl, {...callbacks});
+}
+
+function replaceManagedMethod(klass, methodName, fdata) {
+  if (!fdata) throw new Error('fdata must be an pointer!');
+
+  let md = MonoApiHelper.ClassGetMethodFromName(klass, methodName);
+  if (!md) throw new Error('Method not found!');
+  let impl = MonoApi.mono_compile_method(md)
+
+  Interceptor.replace(impl, fdata);
 }
 
 function resolveClassName(className) {
